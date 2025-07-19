@@ -1,7 +1,8 @@
 // FlowContext.jsx
-import { createContext, useContext, useCallback } from 'react';
+import { createContext, useContext, useCallback, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-
+import { enqueueSnackbar } from 'notistack';
+import { useEdgesState, useNodesState } from '@xyflow/react'
 
 // Context Creation
 const FlowContext = createContext();
@@ -12,10 +13,23 @@ export const useFlow = () => useContext(FlowContext);
 
 
 // Context Provider Creation
-export function FlowProvider({ children, setNodes, nodesSelection }) {
+export function FlowProvider({ children, nodesSelection }) {
+
+  // ---- Nodes Data ----
+  const rawNodeData = localStorage.getItem('nodes')
+  const initialNodes = JSON.parse(rawNodeData) || []
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+
+  // ---- Edges Data ----
+  const rawEdgeData = localStorage.getItem('edges')
+  const initialEdges = JSON.parse(rawEdgeData) || []
+
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   const { selectedNode, setSelectedNode } = nodesSelection
 
+  // Settings Panel for MessageNode
   const updateNode = (newMessage, currentNode) => {
     setNodes((nodes) => {
       const updated = nodes.map((node) =>
@@ -53,7 +67,10 @@ export function FlowProvider({ children, setNodes, nodesSelection }) {
       const data = event.dataTransfer.getData('nodes/reactflow');
       const node = JSON.parse(data)
 
-      if (!node.type) return;
+      if (!node.type) {
+        enqueueSnackbar('Problem in onDrop', { variant: 'error' })
+        return
+      }
 
       const bounds = reactFlowWrapperRef.current.getBoundingClientRect();
       const position = {
@@ -76,8 +93,37 @@ export function FlowProvider({ children, setNodes, nodesSelection }) {
     [setNodes]
   );
 
+
+  // ---- Flow Saving Logic ----
+  const handleSave = () => {
+    if (nodes.length === 0) {
+      enqueueSnackbar("Flow is empty", { variant: "error" });
+      return;
+    }
+
+    const nodesWithNoIncomingEdges = nodes.filter((node) => {
+      const hasIncomingEdge = edges.some((edge) => edge.target === node.id);
+      return !hasIncomingEdge;
+    });
+
+    // ---- In case of More than one Empty Node ----
+    if (nodesWithNoIncomingEdges.length > 1) {
+      enqueueSnackbar("Cannot Save Flow", {
+        variant: "error",
+      });
+      return;
+    }
+
+    enqueueSnackbar("Flow saved successfully", { variant: "success" });
+
+    localStorage.setItem('nodes', JSON.stringify(nodes))
+    localStorage.setItem('edges', JSON.stringify(edges))
+    setSelectedNode(null)
+  };
+
+
   return (
-    <FlowContext.Provider value={{ onDragStart, onDrop, onDragOver, updateNode }}>
+    <FlowContext.Provider value={{ nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange, onDragStart, onDrop, onDragOver, updateNode, handleSave, setSelectedNode }}>
       {children}
     </FlowContext.Provider>
   );
