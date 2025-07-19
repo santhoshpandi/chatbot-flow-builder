@@ -1,5 +1,5 @@
 import { useFlow } from "../../contexts/FlowContext";
-
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 export default function SettingsPanel({ node, setSelectedNode }) {
   if (!node) return null;
@@ -7,19 +7,19 @@ export default function SettingsPanel({ node, setSelectedNode }) {
   const { updateNode } = useFlow()
 
   return (
-    <div className="border w-1/4 p-4">
-      <div className="p-2 border items-center flex relative mb-4">
+    <div className="shadow-gray-400 shadow-xl w-1/4 bg-lime-100">
+      <div className="p-2 bg-lime-500 text items-center flex relative mb-4">
         <span
           onClick={()=>setSelectedNode(null)}
-          className="absolute left-2 cursor-pointer"
-        >⬅</span>
+          className="absolute left-2 cursor-pointer text-2xl"
+        ><IoMdArrowRoundBack /></span>
         <span
-          className="mx-auto"
+          className="mx-auto text-lg"
         >Message</span>
       </div>
 
-      <section>
-        <label className="block mb-2">Message Text</label>
+      <section className="px-4 pb-4 border-b-1">
+        <label className="block mb-2">Text</label>
         <textarea
           className="border w-full p-2"
           value={node.data.message}

@@ -11,11 +11,11 @@ import { nanoid } from 'nanoid';
 export default function FlowBuilder({ setSelectedNode }) {
 
 
- 
+
 
   const reactFlowWrapper = useRef(null);
   const { onDrop, onDragOver } = useFlow();
-  const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange} = useFlow()
+  const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange } = useFlow()
 
 
 
@@ -37,7 +37,7 @@ export default function FlowBuilder({ setSelectedNode }) {
 
         // Reject the Edge Creation
         if (outgoingCount >= MAX_SOURCE_EDGES) {
-          enqueueSnackbar('Only one Edge is Allowed for Source',{variant:'warning'})
+          enqueueSnackbar('Only one Edge is Allowed for Source', { variant: 'warning' })
           return currentEdges;
         }
 
@@ -55,10 +55,14 @@ export default function FlowBuilder({ setSelectedNode }) {
 
   // ---- Trigger Event to Open Settings Panel ----
   const onNodeClick = useCallback((event, node) => {
+    event.stopPropagation();
     setSelectedNode(node)
   }, [])
 
-
+  // ---- Return to Node Panel when empty space clicked ----
+  const onPaneClick = useCallback(() => {
+    setSelectedNode(null);
+  }, []);
 
 
   return (
@@ -66,7 +70,7 @@ export default function FlowBuilder({ setSelectedNode }) {
       ref={reactFlowWrapper}
       onDrop={handleDrop}
       onDragOver={onDragOver}
-      className='w-3/4 h-[93.1vh] border'>
+      className='w-3/4 h-[93.1vh]'>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -75,6 +79,7 @@ export default function FlowBuilder({ setSelectedNode }) {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
+        onPaneClick={onPaneClick}
       >
 
         <Background />
