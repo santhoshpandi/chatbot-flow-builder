@@ -8,6 +8,7 @@ export default function SettingsPanel({ node, setSelectedNode }) {
 
   return (
     <div className="shadow-gray-400 shadow-xl w-1/4 bg-lime-100">
+      {/* Heading */}
       <div className="p-2 bg-lime-500 text items-center flex relative mb-4">
         <span
           onClick={()=>setSelectedNode(null)}
@@ -18,10 +19,11 @@ export default function SettingsPanel({ node, setSelectedNode }) {
         >Message</span>
       </div>
 
+      {/* Text Node Editor */}
       <section className="px-4 pb-4 border-b-1">
         <label className="block mb-2">Text</label>
         <textarea
-          className="border w-full p-2"
+          className="bg-white drop-shadow-xl  w-full p-2"
           value={node.data.message}
           onChange={(e) => updateNode(e.target.value, node)}
         />

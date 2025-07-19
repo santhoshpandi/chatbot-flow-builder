@@ -7,6 +7,7 @@ export default function MessageNode({ data, id }) {
 
   const { setNodes, setEdges, setSelectedNode } = useFlow()
 
+  // To Delete the Specific Node
   const deleteNode = (nodeId) => {
     setSelectedNode(null)
     setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
@@ -15,13 +16,12 @@ export default function MessageNode({ data, id }) {
         (edge) => edge.source !== nodeId && edge.target !== nodeId
       )
     );
-
   };
 
   return (
     <div
       onClick={() => { }}
-      className="bg-white rounded-md w-[200px]">
+      className="bg-white rounded-md w-[200px]  max-w-[240px] overflow-hidden">
 
       {/* ---- Label Part ---- */}
       <div className="bg-green-600 px-2 py-1 flex items-center justify-between rounded-t-md text-white">
@@ -29,6 +29,8 @@ export default function MessageNode({ data, id }) {
           <MdOutlineMessage />
           {data.label}
         </span>
+
+        {/* Node delete icon */}
         <span
           onClick={(e) => {
             e.stopPropagation()
@@ -40,7 +42,7 @@ export default function MessageNode({ data, id }) {
       </div>
 
       {/* ---- Message Part ---- */}
-      <p className="p-2 bg-green-200 rounded-b-md">
+      <p className="p-2 bg-green-200 rounded-b-md break-words text-sm leading-snug">
         {data.message}
       </p>
       <Handle type="source" position={Position.Right} id='out' />

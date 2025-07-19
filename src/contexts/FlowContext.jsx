@@ -101,26 +101,39 @@ export function FlowProvider({ children, nodesSelection }) {
       return;
     }
 
-    const nodesWithNoIncomingEdges = nodes.filter((node) => {
-      const hasIncomingEdge = edges.some((edge) => edge.target === node.id);
-      return !hasIncomingEdge;
-    });
+    // const nodesWithNoIncomingEdges = nodes.filter((node) => {
+    //   const hasIncomingEdge = edges.some((edge) => edge.target === node.id);
+    //   return !hasIncomingEdge;
+    // });
 
-    // ---- In case of More than one Empty Node ----
-    if (nodesWithNoIncomingEdges.length > 1) {
-      enqueueSnackbar("Cannot Save Flow", {
-        variant: "error",
-      });
+    // // ---- In case of More than one Empty Node ----
+    // if (nodesWithNoIncomingEdges.length > 1) {
+    //   enqueueSnackbar("Cannot Save Flow", {
+    //     variant: "error",
+    //   });
+    //   return;
+    // }
+
+    const terminalNodes = nodes.filter(
+      (n) => !edges.some((e) => e.source === n.id)
+    );
+
+    // Save button press will show an error if there are more than one Nodes and more than one Node has empty target handles 
+    if (terminalNodes.length > 1) {
+      enqueueSnackbar(
+        'Cannot Save Flow',
+        { variant: 'error' }
+      );
       return;
     }
 
     enqueueSnackbar("Flow saved successfully", { variant: "success" });
 
+    // Uploaded in Local StoRage
     localStorage.setItem('nodes', JSON.stringify(nodes))
     localStorage.setItem('edges', JSON.stringify(edges))
     setSelectedNode(null)
   };
-
 
   return (
     <FlowContext.Provider value={{ nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange, onDragStart, onDrop, onDragOver, updateNode, handleSave, setSelectedNode }}>

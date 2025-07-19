@@ -1,6 +1,5 @@
-
 import '@xyflow/react/dist/style.css';
-import { Background, Controls, MiniMap, ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+import { Background, Controls, MiniMap, ReactFlow, useNodesState, useEdgesState, addEdge, MarkerType } from '@xyflow/react';
 import { useCallback, useRef } from 'react';
 import { useFlow } from '../../contexts/FlowContext';
 
@@ -10,14 +9,11 @@ import { nanoid } from 'nanoid';
 
 export default function FlowBuilder({ setSelectedNode }) {
 
-
-
-
   const reactFlowWrapper = useRef(null);
   const { onDrop, onDragOver } = useFlow();
+
+  // Obtaining Necessary data from Context API
   const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange } = useFlow()
-
-
 
   const handleDrop = (e) => onDrop(e, reactFlowWrapper);
 
@@ -35,7 +31,7 @@ export default function FlowBuilder({ setSelectedNode }) {
             e.sourceHandle === connection.sourceHandle
         ).length;
 
-        // Reject the Edge Creation
+        // Reject the Edge Creation when more than one Target
         if (outgoingCount >= MAX_SOURCE_EDGES) {
           enqueueSnackbar('Only one Edge is Allowed for Source', { variant: 'warning' })
           return currentEdges;
@@ -44,9 +40,13 @@ export default function FlowBuilder({ setSelectedNode }) {
         // If it has no Edge from its Source, New Edge will be Created
         const edge = {
           ...connection,
-          animated: true,
-          id: nanoid()
+          animated: false,
+          id: nanoid(),
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+          }
         };
+
         return addEdge(edge, currentEdges);
       }),
     []
@@ -70,7 +70,9 @@ export default function FlowBuilder({ setSelectedNode }) {
       ref={reactFlowWrapper}
       onDrop={handleDrop}
       onDragOver={onDragOver}
-      className='w-3/4 h-[93.1vh]'>
+      className='w-3/4 h-[93vh]'>
+      
+      {/* Reactflow Component */}
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -81,10 +83,10 @@ export default function FlowBuilder({ setSelectedNode }) {
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
       >
-
         <Background />
         <Controls />
       </ReactFlow>
+
     </div>
   )
 }
