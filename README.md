@@ -120,13 +120,6 @@ The dashboard will be available at http://localhost:5173
 
   ```
 
-### 😎 Usage
-
-- **Navigation Bar**: Click on different navigation items (like Home, Trends, Layout, etc.) to navigate to different sections of the dashboard.
-- **Dark Mode Toggle**: The dark mode can be toggled by clicking the switch in the top-right corner of the dashboard. The theme will persist across page reloads.
-- **Charts**: Use the pre-built chart components to display data, or customize them according to your needs.
-
-
 ## 🎭 Acknowledgments
 
 - **React**: A JavaScript library for building user interfaces.
