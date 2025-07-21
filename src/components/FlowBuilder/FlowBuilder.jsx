@@ -82,6 +82,7 @@ export default function FlowBuilder({ setSelectedNode }) {
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        fitView
       >
         <Background />
         <Controls />
