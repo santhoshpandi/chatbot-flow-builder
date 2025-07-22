@@ -18,7 +18,7 @@ function App() {
       {/* -------- NotiStack for Notification Popups -------- */}
       <SnackbarProvider
         // preventDuplicate
-        autoHideDuration={700}
+        autoHideDuration={900}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       />
 
